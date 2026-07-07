@@ -1,6 +1,8 @@
 # Pomodoro Timer App
 
-A polished Pomodoro timer built with React. Offers start/pause, reset, session counter, and customizable work/break durations with a gentle alarm at each transition.
+A polished Pomodoro timer built with React. Offers start/pause, reset, session counter, customizable work/break durations, and a gentle alarm at each transition.
+
+A live history panel logs every completed session with timestamps so you can revisit your focus streaks.
 
 ## Setup
 
