@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import TimerDisplay from './components/TimerDisplay';
 import Controls from './components/Controls';
 import SessionSettings from './components/SessionSettings';
+import SessionLogs from './components/SessionLogs';
 import './App.css';
 
 const MIN_DURATION = 1;
@@ -22,6 +23,7 @@ const App = () => {
   const [isWorkSession, setIsWorkSession] = useState(true);
   const [timeLeft, setTimeLeft] = useState(workDuration * 60);
   const [sessionCount, setSessionCount] = useState(0);
+  const [sessionLogs, setSessionLogs] = useState([]);
 
   useEffect(() => {
     if (!isRunning) {
@@ -57,6 +59,18 @@ const App = () => {
   }, []);
 
   const transitionToNextSession = useCallback(() => {
+    const completedSessionType = isWorkSession ? 'Work' : 'Break';
+    const completedDuration = isWorkSession ? workDuration : breakDuration;
+
+    setSessionLogs(logs => [
+      {
+        type: completedSessionType,
+        duration: completedDuration,
+        endedAt: new Date().toISOString(),
+      },
+      ...logs,
+    ]);
+
     setIsWorkSession(prev => {
       const nextSession = !prev;
       if (prev) {
@@ -66,8 +80,9 @@ const App = () => {
       setTimeLeft(nextDuration * 60);
       return nextSession;
     });
+
     playAlarm();
-  }, [workDuration, breakDuration, playAlarm]);
+  }, [breakDuration, isWorkSession, playAlarm, workDuration]);
 
   useEffect(() => {
     if (!isRunning || timeLeft !== 0) {
@@ -112,6 +127,7 @@ const App = () => {
           onWorkChange={updateWorkDuration}
           onBreakChange={updateBreakDuration}
         />
+        <SessionLogs logs={sessionLogs} />
       </div>
     </div>
   );
